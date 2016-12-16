@@ -47,7 +47,7 @@ optparse = OptionParser.new do|opts|
   end
 
   options[:edit] = nil
-  opts.on('-e', '--edit', 'URL of the source document') do |edit|
+  opts.on('-e', '--edit URL', 'URL of the source document') do |edit|
     options[:edit] = edit
   end
 
