@@ -74,7 +74,7 @@ end
 
 begin
   text = File.read(options[:markdownFile])
-  @convertedText = "#{Kramdown::Document.new(text).to_confluence}"
+  @convertedText = "#{Kramdown::Document.new(text, :input => 'GFM').to_confluence}"
 rescue Exception => ex
   warn "There was an error running the converter: \n#{ex}"
 end
