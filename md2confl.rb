@@ -84,7 +84,7 @@ rescue Exception => ex
   warn "There was an error running the converter: \n#{ex}"
 end
 
-@convertedText = "#{@convertedText}\n\n(rendered at #{Time.now.getutc} by md2confl)"
+#@convertedText = "#{@convertedText}\n\n(rendered at #{Time.now.getutc} by md2confl)"
 
 if not options[:edit].nil?
   @convertedText = "{info}This page is authored [here|#{options[:edit]}].{info}\n\n#{@convertedText}"
