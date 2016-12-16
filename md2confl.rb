@@ -46,6 +46,11 @@ optparse = OptionParser.new do|opts|
     options[:verbose] = true
   end
 
+  options[:edit] = nil
+  opts.on('-e', '--edit', 'URL of the source document') do |edit|
+    options[:edit] = edit
+  end
+
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
@@ -80,6 +85,10 @@ rescue Exception => ex
 end
 
 @convertedText = "#{@convertedText}\n\n(rendered at #{Time.now.getutc} by md2confl)"
+
+if not options[:edit].nil?
+  @convertedText = "{note}This page is authored [here|#{options[:edit]}].{note}\n\n#{@convertedText}"
+end
 
 uploader_page.content = cs.convert_wiki_to_storage_format(@convertedText)
 options = {minorEdit: true, versionComment: 'updated by md2confl'}
