@@ -87,7 +87,7 @@ end
 @convertedText = "#{@convertedText}\n\n(rendered at #{Time.now.getutc} by md2confl)"
 
 if not options[:edit].nil?
-  @convertedText = "{note}This page is authored [here|#{options[:edit]}].{note}\n\n#{@convertedText}"
+  @convertedText = "{info}This page is authored [here|#{options[:edit]}].{info}\n\n#{@convertedText}"
 end
 
 uploader_page.content = cs.convert_wiki_to_storage_format(@convertedText)
