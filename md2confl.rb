@@ -90,6 +90,9 @@ if not options[:edit].nil?
   @convertedText = "{info}This page is authored [here|#{options[:edit]}].{info}\n\n#{@convertedText}"
 end
 
+# pdericson This is to avoid \<br... in the rendered output.
+@convertedText.gsub!(/\\(?=\n)/, '')
+
 uploader_page.content = cs.convert_wiki_to_storage_format(@convertedText)
 options = {minorEdit: true, versionComment: 'updated by md2confl'}
 cs.update_page(uploader_page)
