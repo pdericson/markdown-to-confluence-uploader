@@ -15,7 +15,7 @@ optparse = OptionParser.new do|opts|
   end
 
   options[:spaceName] = nil
-  opts.on('-s', '--space SPACE_NAME', 'REQUIRED. The Confluence space name in which the page resides.') do |space|
+  opts.on('-s', '--space SPACE_NAME', 'UNUSED. The Confluence space name in which the page resides.') do |space|
     options[:spaceName] = space
   end
 
@@ -59,8 +59,7 @@ end
 
 optparse.parse!
 
-# space_name and page_id are required arguments
-raise OptionParser::MissingArgument, '-s SPACE_NAME is a required argument' if options[:spaceName].nil?
+# page_id is a required argument
 raise OptionParser::MissingArgument, '-p PAGE_ID is a required argument' if options[:pageId].nil?
 
 user = ENV['CONFLUENCE_USER'] || options[:user] || ''
@@ -69,8 +68,7 @@ password = ENV['CONFLUENCE_PASSWORD'] || options[:password] || ''
 opts = options[:verbose] ? {} : {log: false}
 cs = ConfluenceSoap.new("#{options[:server]}/rpc/soap-axis/confluenceservice-v2?wsdl", user, password, opts)
 
-pages = cs.get_pages(options[:spaceName])
-uploader_page = pages.detect { |page| page.id == options[:pageId] }
+uploader_page = cs.get_page(options[:pageId])
 
 if uploader_page.nil?
   puts "exiting... could not find pageId: #{options[:pageId]}"
@@ -91,7 +89,7 @@ end
 #@convertedText = "#{@convertedText}\n\n(rendered at #{Time.now.getutc} by md2confl)"
 
 if not options[:edit].nil?
-  @convertedText = "{info}This page is authored [here|#{options[:edit]}].{info}\n\n#{@convertedText}"
+  @convertedText = "{info}The rest of this page is authored [here|#{options[:edit]}].  You can add content above and it will not be overwritten.{info}\n\n#{@convertedText}"
 end
 
 # pdericson This is to avoid \<br... in the rendered output.
@@ -100,6 +98,11 @@ end
 # pdericson
 @convertedText.gsub!(/aeloo9jieV6ahbiesusheteeseuroonu/, '<')
 
-uploader_page.content = cs.convert_wiki_to_storage_format(@convertedText)
+match = uploader_page.content.match(/(.*?)<ac:structured-macro ac:name="info" ac:schema-version="1" ac:macro-id=".*?"><ac:rich-text-body><p>The rest of this page is authored.*You can add content above/m)
+if match
+  uploader_page.content = match[1] + cs.convert_wiki_to_storage_format(@convertedText)
+else
+  uploader_page.content = cs.convert_wiki_to_storage_format(@convertedText)
+end
 options = {minorEdit: true, versionComment: 'updated by md2confl'}
 cs.update_page(uploader_page)
