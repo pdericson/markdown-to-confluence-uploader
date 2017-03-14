@@ -79,6 +79,10 @@ end
 
 begin
   text = File.read(options[:markdownFile])
+
+  # pdericson
+  text.gsub!(/</, 'aeloo9jieV6ahbiesusheteeseuroonu')
+
   @convertedText = "#{Kramdown::Document.new(text, :input => 'GFM').to_confluence}"
 rescue Exception => ex
   warn "There was an error running the converter: \n#{ex}"
@@ -92,6 +96,9 @@ end
 
 # pdericson This is to avoid \<br... in the rendered output.
 @convertedText.gsub!(/\\(?=\n)/, '')
+
+# pdericson
+@convertedText.gsub!(/aeloo9jieV6ahbiesusheteeseuroonu/, '<')
 
 uploader_page.content = cs.convert_wiki_to_storage_format(@convertedText)
 options = {minorEdit: true, versionComment: 'updated by md2confl'}
