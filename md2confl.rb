@@ -98,7 +98,7 @@ end
 # pdericson
 @convertedText.gsub!(/aeloo9jieV6ahbiesusheteeseuroonu/, '<')
 
-match = uploader_page.content.match(/(.*?)<ac:structured-macro ac:name="info" ac:schema-version="1" ac:macro-id=".*?"><ac:rich-text-body><p>The rest of this page is authored/m)
+match = uploader_page.content.match(/(.*?)<ac:structured-macro ac:name="info" ac:schema-version="1" ac:macro-id="[^"]*"><ac:rich-text-body><p>The rest of this page is authored/m)
 if match
   uploader_page.content = match[1] + cs.convert_wiki_to_storage_format(@convertedText)
 else
